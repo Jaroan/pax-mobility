@@ -1,12 +1,12 @@
 import datetime
 
 from concordia.agents import entity_agent_with_logging
-from concordia.associative_memory import associative_memory
+from concordia.associative_memory import basic_associative_memory
 from concordia.associative_memory import formative_memories
 from concordia.clocks import game_clock
 from concordia.components import agent as agent_components
 from concordia.language_model import language_model
-from concordia.memory_bank import legacy_associative_memory
+# from concordia.memory_bank import legacy_associative_memory
 from concordia.utils import measurements as measurements_lib
 
 from typing import Sequence
@@ -20,12 +20,12 @@ import pandas as pd
 
 
 from concordia.components.agent import action_spec_ignored
-from concordia.components.agent import memory_component
+from concordia.components.agent import memory as memory_component
 from concordia.document import interactive_document
 from concordia.typing import logging
 from concordia.typing import entity_component
 from concordia.typing import entity as entity_lib
-from concordia.typing import clock as game_clock_1
+from concordia.typing.deprecated import clock as game_clock_1
 from concordia.typing import entity_component
 from concordia.utils import helper_functions
 from concordia.components.agent import constant
@@ -34,7 +34,7 @@ def _get_class_name(object_: object) -> str:
   return object_.__class__.__name__
 
 VARIANT_CONSTANT = 'big' #['small', 'big']
-THEORY_CONSTANT = 'gameTheo_boundRat' #['prospect_theory', 'social_identity', 'utility_maximization', 'game_theory', 'distributed_cognition', 'loss_aversion','socIden_lossAver_distCog','socIden_lossAver_distCog_prosThe','socIden_gameTheo_distCog']
+THEORY_CONSTANT = 'gameTheo_boundRat'  # ['prospect_theory', 'social_identity', 'utility_maximization', 'game_theory', 'distributed_cognition', 'loss_aversion','socIden_lossAver_distCog','socIden_lossAver_distCog_prosThe','socIden_gameTheo_distCog']
 # Helper Functions for Decision Theory
 def action_prompt(Scenario_Understanding, Partner_Understanding, Self_Understanding, Observations, Decision_Theory_Specific_Question):
     scenario_section = f"""## Scenario Understanding:
@@ -281,7 +281,7 @@ class ScenarioUnderstanding(action_spec_ignored.ActionSpecIgnored):
       timeframe_delta_from: datetime.timedelta,
       timeframe_delta_until: datetime.timedelta,
       memory_component_name: str = (
-          memory_component.DEFAULT_MEMORY_COMPONENT_NAME
+          memory_component.DEFAULT_MEMORY_COMPONENT_KEY
       ),
       components: Mapping[str, str] = types.MappingProxyType({}),
       prompt: str | None = None,
@@ -531,7 +531,7 @@ class SelfUnderstanding(action_spec_ignored.ActionSpecIgnored):
       timeframe_delta_from: datetime.timedelta,
       timeframe_delta_until: datetime.timedelta,
       memory_component_name: str = (
-          memory_component.DEFAULT_MEMORY_COMPONENT_NAME
+          memory_component.DEFAULT_MEMORY_COMPONENT_KEY
       ),
       components: Mapping[str, str] = types.MappingProxyType({}),
       prompt: str | None = None,
@@ -762,7 +762,7 @@ class ParticipantUnderstanding(action_spec_ignored.ActionSpecIgnored):
       timeframe_delta_from: datetime.timedelta,
       timeframe_delta_until: datetime.timedelta,
       memory_component_name: str = (
-          memory_component.DEFAULT_MEMORY_COMPONENT_NAME
+          memory_component.DEFAULT_MEMORY_COMPONENT_KEY
       ),
       components: Mapping[str, str] = types.MappingProxyType({}),
       prompt: str | None = None,
@@ -1029,7 +1029,7 @@ class DecisionTheoryThoughtProcess(action_spec_ignored.ActionSpecIgnored):
       timeframe_delta_from: datetime.timedelta,
       timeframe_delta_until: datetime.timedelta,
       memory_component_name: str = (
-          memory_component.DEFAULT_MEMORY_COMPONENT_NAME
+          memory_component.DEFAULT_MEMORY_COMPONENT_KEY
       ),
       components: Mapping[str, str] = types.MappingProxyType({}),
       prompt: str | None = None,
@@ -1604,7 +1604,7 @@ Now, please answer the specific question posed below."""
 def build_agent(
     config: formative_memories.AgentConfig,
     model: language_model.LanguageModel,
-    memory: associative_memory.AssociativeMemory,
+    memory: basic_associative_memory.AssociativeMemoryBank,
     clock: game_clock.MultiIntervalClock,
     update_time_interval: datetime.timedelta,
 ) -> entity_agent_with_logging.EntityAgentWithLogging:
